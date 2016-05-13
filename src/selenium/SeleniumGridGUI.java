@@ -278,7 +278,7 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
             stopHubButton.setEnabled(true);
         } catch (IOException ex) {
             Logger.getLogger(SeleniumGridGUI.class.getName()).log(Level.SEVERE, null, ex);
-            statusLabel.setText(ex.toString() + "\n\n");
+            statusLabel.setText(ex.toString());
             startHubButton.setEnabled(true);
             stopHubButton.setEnabled(false);
         }
@@ -311,7 +311,7 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
             statusLabel.setText("Selenium Path: " + String.valueOf(selFile));
         }catch (Exception ex){
             seleniumJarPath = "";
-            statusLabel.setText("No selenium selected." + "\n\n");
+            statusLabel.setText("No selenium selected.");
         }
     }//GEN-LAST:event_findserverbuttonclick
 
