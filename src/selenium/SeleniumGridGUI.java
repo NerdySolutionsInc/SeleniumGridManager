@@ -7,7 +7,6 @@ package selenium;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -19,7 +18,8 @@ import javax.swing.JFileChooser;
 public class SeleniumGridGUI extends javax.swing.JFrame {
 
     Process seleniumHubProcess;
-    ArrayList seleniumNodeProcess = new ArrayList();
+    Process seleniumNodeProcess;
+    
     String seleniumJarPath = "";
     String seleniumJarProcessPath = "";
     String seleniumJarProcessName = "";
@@ -51,16 +51,19 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         startNodeButton = new javax.swing.JButton();
-        stopNodeButton = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         nodeBrowserNameText = new javax.swing.JTextField();
         nodeMaxSessionsText = new javax.swing.JTextField();
         nodeMaxInstances = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        portlabel = new javax.swing.JLabel();
         nodeMaxReloadMinutes = new javax.swing.JTextField();
-        statusLabel = new javax.swing.JLabel();
+        nodePort = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        statusLabel1 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        statusLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Selenium Grid GUI by Ray");
@@ -71,6 +74,7 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
         jLabel1.setText("Selenium Hub");
 
         seleniumUrlLabel.setText("http://");
+        seleniumUrlLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
         startHubButton.setText("Start");
         startHubButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -88,6 +92,11 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
         stopHubButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 stophubbutton(evt);
+            }
+        });
+        stopHubButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopHubButtonActionPerformed(evt);
             }
         });
 
@@ -113,17 +122,16 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(seleniumUrlLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(seleniumUrlLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 66, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(startHubButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(stopHubButton, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 107, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(startHubButton)
-                        .addGap(2, 2, 2)
-                        .addComponent(stopHubButton)
-                        .addContainerGap())
-                    .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,25 +139,33 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(seleniumUrlLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startHubButton)
-                    .addComponent(stopHubButton))
+                    .addComponent(startHubButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(stopHubButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        jLabel3.setText("Selenium Node");
+        jLabel3.setText("Node Setup");
 
         jLabel4.setText("maxSessions:");
 
         startNodeButton.setText("Start");
-
-        stopNodeButton.setText("Stop");
+        startNodeButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                nodestartbuttonclick(evt);
+            }
+        });
+        startNodeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startNodeButtonActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("maxInstances:");
 
@@ -163,7 +179,16 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
 
         jLabel8.setText("reloadMinutes:");
 
-        nodeMaxReloadMinutes.setText("25");
+        portlabel.setText("maxInstances:");
+
+        nodeMaxReloadMinutes.setText("30");
+
+        nodePort.setText("1000");
+
+        jLabel10.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
+        jLabel10.setText("Nodes Reloaded:");
+
+        statusLabel1.setText("0");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -171,31 +196,37 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
-                        .addComponent(nodeMaxInstances, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel4))
-                        .addGap(18, 18, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(nodeMaxSessionsText)
-                            .addComponent(nodeBrowserNameText, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(nodeMaxReloadMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(startNodeButton)
+                        .addComponent(nodeBrowserNameText, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(nodeMaxInstances, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(portlabel)
+                        .addGap(152, 152, 152)
+                        .addComponent(nodePort, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nodeMaxSessionsText, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addGap(22, 22, 22)
+                                .addComponent(jLabel10)
+                                .addGap(18, 18, 18)
+                                .addComponent(statusLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(stopNodeButton)))
-                .addContainerGap())
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(startNodeButton)
+                                .addGap(14, 14, 14))
+                            .addComponent(nodeMaxReloadMinutes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -215,49 +246,60 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
                     .addComponent(nodeMaxInstances, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(portlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nodePort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(nodeMaxReloadMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startNodeButton)
-                    .addComponent(stopNodeButton)))
+                    .addComponent(jLabel10)
+                    .addComponent(statusLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(startNodeButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        statusLabel.setText("Idle");
-
         jLabel9.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        jLabel9.setText("Status");
+        jLabel9.setText("Status:");
+
+        statusLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        statusLabel.setText("Idle");
+        statusLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        statusLabel.setIgnoreRepaint(true);
+        statusLabel.setSize(new java.awt.Dimension(23, 16));
+        statusLabel.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(statusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(statusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(statusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -270,7 +312,6 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
         }
         try {
             String processName = new File(seleniumJarPath).getName();
-            String processPath = new File(seleniumJarPath).getPath();
             Runtime rt = Runtime.getRuntime();
             seleniumHubProcess = rt.exec("java -jar " + processName +  " -role hub http://localhost:4444/grid/register");
             seleniumUrlLabel.setText("http://localhost:4444/grid/register");
@@ -319,6 +360,60 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void stopHubButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopHubButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stopHubButtonActionPerformed
+
+    private void startNodeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startNodeButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_startNodeButtonActionPerformed
+
+    private void restartNode() {
+        try{
+            statusLabel.setText("Starting Node...");
+            String processName = new File(seleniumJarPath).getName();
+            Runtime rt = Runtime.getRuntime();
+            //start java -jar selenium-server-standalone-2.53.0.jar -role node -hub http://localhost:4444/grid/register -port 5556 -browser "browserName=firefox,maxSessions=99999,maxInstances=99999,platform=VISTA,seleniumProtocol=WebDriver"
+
+            seleniumNodeProcess = rt.exec("java -jar " + processName +  " -role node http://localhost:4444/grid/register -port 5556 -browser \"browserName=firefox,maxSessions=99999,maxInstances=99999,platform=VISTA, seleniumProtocol=WebDriver\"");
+            statusLabel.setText("Node Started Successfully!");
+            startNodeButton.setEnabled(false);
+        }catch (IOException ex) {
+            Logger.getLogger(SeleniumGridGUI.class.getName()).log(Level.SEVERE, null, ex);
+            statusLabel.setText(ex.toString());
+            startNodeButton.setEnabled(true);
+        }
+    }
+    private void nodestartbuttonclick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nodestartbuttonclick
+        
+        Thread thread;
+        thread = new Thread(){
+            @Override
+            public void run(){
+                //wait desired amount of time.
+                statusLabel.setText("Waiting...");
+                try {
+                    Thread.sleep(Integer.parseInt(nodeMaxReloadMinutes.getText()) * 60);
+                }catch(NumberFormatException | InterruptedException ex) {
+                    System.out.println(ex.toString());
+                    statusLabel.setText("There was an error starting the selenium Node.");
+                }
+                //restart node after time is done waiting...
+            }
+        };
+
+        thread.start();
+        
+        startNodeButton.setEnabled(false);
+        restartNode();
+        
+        // start the infinite loop...
+        while (true) {
+            
+            
+        }
+    }//GEN-LAST:event_nodestartbuttonclick
+
     /**
      * @param args the command line arguments
      */
@@ -358,6 +453,7 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -370,11 +466,13 @@ public class SeleniumGridGUI extends javax.swing.JFrame {
     private javax.swing.JTextField nodeMaxInstances;
     private javax.swing.JTextField nodeMaxReloadMinutes;
     private javax.swing.JTextField nodeMaxSessionsText;
+    private javax.swing.JTextField nodePort;
+    private javax.swing.JLabel portlabel;
     private javax.swing.JLabel seleniumUrlLabel;
     private javax.swing.JButton startHubButton;
     private javax.swing.JButton startNodeButton;
     private javax.swing.JLabel statusLabel;
+    private javax.swing.JLabel statusLabel1;
     private javax.swing.JButton stopHubButton;
-    private javax.swing.JButton stopNodeButton;
     // End of variables declaration//GEN-END:variables
 }
